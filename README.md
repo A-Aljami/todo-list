@@ -37,6 +37,24 @@ New users create an account with email and password. Includes a password strengt
 
 ---
 
+## Task Planning
+
+The project was planned and tracked using a Trello board, broken into 7 phases — each phase completed and verified before moving to the next.
+
+![Trello Board](docs/trello.png)
+
+| Phase | Scope |
+|-------|-------|
+| Phase 1 | Foundation — Docker, repo structure, environment config |
+| Phase 2 | Database — PostgreSQL schema, connection pool, auto-init |
+| Phase 3 | Backend Auth — Register, login, refresh, logout, middleware |
+| Phase 4 | Backend Todos — CRUD endpoints with ownership checks |
+| Phase 5 | Frontend — React pages, auth context, Axios interceptors |
+| Phase 6 | Security — Helmet, rate limiting, HTTP-only cookies, error handling |
+| Phase 7 | Docs & Testing — README, diagrams, 32-test API suite |
+
+---
+
 ## Quick Start
 
 ### Prerequisites
@@ -153,7 +171,7 @@ The app uses a **dual-token JWT strategy** for secure, stateless authentication:
 | Token | Lifetime | Storage | Purpose |
 |-------|----------|---------|---------|
 | Access Token | 15 minutes | localStorage | Sent with every API request |
-| Refresh Token | 7 days | localStorage + database | Used to obtain new access tokens |
+| Refresh Token | 7 days | HTTP-only cookie + database | Used to obtain new access tokens |
 
 **Flow:**
 1. User logs in → server issues access + refresh tokens
@@ -244,3 +262,17 @@ todo-list/
 ├── .env.example
 └── .gitignore
 ```
+
+---
+
+<p align="center">
+  Built by <strong>Ali Aljami</strong>
+  <br><br>
+  <a href="https://github.com/A-Aljami/">
+    <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
+  </a>
+  &nbsp;
+  <a href="https://alialjami.dev/">
+    <img src="https://img.shields.io/badge/Portfolio-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Portfolio" />
+  </a>
+</p>

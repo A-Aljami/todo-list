@@ -57,6 +57,18 @@ export default function Dashboard() {
     }
   };
 
+  const handleEdit = async (id: string, title: string, description: string) => {
+    setError("");
+    try {
+      const res = await api.put(`/todos/${id}`, { title, description });
+      setTodos(todos.map((t) => (t.id === id ? res.data : t)));
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        setError(err.response?.data?.error || "Failed to update todo");
+      }
+    }
+  };
+
   const handleDelete = async (id: string) => {
     setError("");
     try {
@@ -144,6 +156,7 @@ export default function Dashboard() {
                 key={todo.id}
                 todo={todo}
                 onToggle={handleToggle}
+                onEdit={handleEdit}
                 onDelete={handleDelete}
               />
             ))
