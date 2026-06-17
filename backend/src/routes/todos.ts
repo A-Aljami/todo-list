@@ -7,7 +7,10 @@ const router = Router();
 
 router.use(authenticate);
 
-// GET all todos for the logged-in user
+function isZodError(err: unknown): err is { name: string; errors: unknown[] } {
+  return err instanceof Error && err.name === "ZodError";
+}
+
 router.get("/", async (req: AuthRequest, res: Response) => {
   try {
     const result = await pool.query(
@@ -21,7 +24,6 @@ router.get("/", async (req: AuthRequest, res: Response) => {
   }
 });
 
-// POST create a new todo
 router.post("/", async (req: AuthRequest, res: Response) => {
   try {
     const { title, description, priority, due_date } = createTodoSchema.parse(req.body);
@@ -30,8 +32,8 @@ router.post("/", async (req: AuthRequest, res: Response) => {
       [req.userId, title, description || null, priority || 0, due_date || null]
     );
     res.status(201).json(result.rows[0]);
-  } catch (err: any) {
-    if (err.name === "ZodError") {
+  } catch (err) {
+    if (isZodError(err)) {
       res.status(400).json({ error: "Validation failed", details: err.errors });
       return;
     }
@@ -40,7 +42,6 @@ router.post("/", async (req: AuthRequest, res: Response) => {
   }
 });
 
-// PUT update a todo
 router.put("/:id", async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
@@ -59,8 +60,8 @@ router.put("/:id", async (req: AuthRequest, res: Response) => {
       return;
     }
     res.json(result.rows[0]);
-  } catch (err: any) {
-    if (err.name === "ZodError") {
+  } catch (err) {
+    if (isZodError(err)) {
       res.status(400).json({ error: "Validation failed", details: err.errors });
       return;
     }
@@ -69,7 +70,6 @@ router.put("/:id", async (req: AuthRequest, res: Response) => {
   }
 });
 
-// DELETE a todo
 router.delete("/:id", async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;

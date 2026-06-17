@@ -7,6 +7,6 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 5001
+EXPOSE 5000
 
 CMD ["npx", "nodemon", "--exec", "npx tsx", "src/index.ts"]
