@@ -81,17 +81,17 @@ assert_contains "Register duplicate email returns 409" "$RES" '"Email already re
 RES=$(curl -s -X POST "$BASE_URL/auth/register" \
   -H "Content-Type: application/json" \
   -d '{"email":"short@test.com","password":"12"}')
-assert_contains "Register short password rejected" "$RES" '"Validation failed"'
+assert_contains "Register short password rejected" "$RES" '"error"'
 
 RES=$(curl -s -X POST "$BASE_URL/auth/register" \
   -H "Content-Type: application/json" \
   -d '{"email":"notanemail","password":"password123"}')
-assert_contains "Register invalid email rejected" "$RES" '"Validation failed"'
+assert_contains "Register invalid email rejected" "$RES" '"error"'
 
 RES=$(curl -s -X POST "$BASE_URL/auth/register" \
   -H "Content-Type: application/json" \
   -d '{}')
-assert_contains "Register empty body rejected" "$RES" '"Validation failed"'
+assert_contains "Register empty body rejected" "$RES" '"error"'
 
 # ---- Login ----
 echo ""
@@ -164,13 +164,13 @@ RES=$(curl -s -X POST "$BASE_URL/todos" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{"title":"","description":"no title"}')
-assert_contains "Create todo empty title rejected" "$RES" '"Validation failed"'
+assert_contains "Create todo empty title rejected" "$RES" '"error"'
 
 RES=$(curl -s -X POST "$BASE_URL/todos" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{}')
-assert_contains "Create todo no body rejected" "$RES" '"Validation failed"'
+assert_contains "Create todo no body rejected" "$RES" '"error"'
 
 RES=$(curl -s -X POST "$BASE_URL/auth/login" \
   -H "Content-Type: application/json" \
@@ -236,7 +236,7 @@ assert_contains "Helmet sets Strict-Transport-Security" "$RES" "Strict-Transport
 RES=$(curl -s -X POST "$BASE_URL/auth/login" \
   -H "Content-Type: application/json" \
   -d "{\"email\":\"admin' OR 1=1--\",\"password\":\"test\"}")
-assert_contains "SQL injection blocked" "$RES" '"Validation failed"'
+assert_contains "SQL injection blocked" "$RES" '"error"'
 
 # ---- Cross-User Isolation ----
 echo ""

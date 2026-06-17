@@ -7,8 +7,20 @@ const router = Router();
 
 router.use(authenticate);
 
-function isZodError(err: unknown): err is { name: string; errors: unknown[] } {
+interface ZodIssue {
+  message: string;
+  path: (string | number)[];
+}
+
+function isZodError(err: unknown): err is { name: string; issues: ZodIssue[] } {
   return err instanceof Error && err.name === "ZodError";
+}
+
+function formatZodError(issues: ZodIssue[]): string {
+  return issues.map((i) => {
+    const field = i.path.length > 0 ? `${i.path.join(".")}: ` : "";
+    return field + i.message;
+  }).join(", ");
 }
 
 router.get("/", async (req: AuthRequest, res: Response) => {
@@ -34,7 +46,7 @@ router.post("/", async (req: AuthRequest, res: Response) => {
     res.status(201).json(result.rows[0]);
   } catch (err) {
     if (isZodError(err)) {
-      res.status(400).json({ error: "Validation failed", details: err.errors });
+      res.status(400).json({ error: formatZodError(err.issues) });
       return;
     }
     console.error("Create todo error:", err);
@@ -62,7 +74,7 @@ router.put("/:id", async (req: AuthRequest, res: Response) => {
     res.json(result.rows[0]);
   } catch (err) {
     if (isZodError(err)) {
-      res.status(400).json({ error: "Validation failed", details: err.errors });
+      res.status(400).json({ error: formatZodError(err.issues) });
       return;
     }
     console.error("Update todo error:", err);
